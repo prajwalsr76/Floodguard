@@ -12,9 +12,6 @@ itself**.
   the dashboard and, when the alert level changes, sends an alert (computer pop-up, browser, Telegram,
   e-mail or SMS). Nobody has to click anything.
 
-Team: Saksham Kumar (112315158), Prajwal S R (112315136), Vishal Sagar (112315209), IIIT Pune.
-Supervisor: Dr. Mahendra Yadav. Proposal deck: https://gamma.app/docs/FloodGuard-unwcpsn9a2ud0bh?mode=doc
-
 This is a research prototype, not an official CWC or OSDMA warning.
 
 ---
