@@ -1,0 +1,11 @@
+,value
+label,connected
+F1_flood_events,0.6412875
+IoU_flood_events,0.5001875
+area_ratio_flood_events_median,1.16315
+precision_flood_events,0.61915
+recall_flood_events,0.7509625
+F1_all_events,0.5452625000000001
+spearman_pred_vs_obs_area,0.7734353796884329
+spearman_pred_area_vs_naraj,0.6902157690152388
+mean_threshold,0.9

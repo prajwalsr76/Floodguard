@@ -1,0 +1,6 @@
+,precision_flood_events,recall_flood_events,F1_Dice_flood_events,IoU_CSI_flood_events,area_ratio_flood_events,ROC_AUC_flood_events,PR_AUC_flood_events,ROC_AUC_all_events,PR_AUC_all_events,F1_Dice_all_events,n_flood_events,n_events
+terrain,0.2333,0.6964,0.3307,0.2044,6.3617,0.9337,0.3743,0.9491,0.2765,0.2393,16.0,48.0
++river,0.4531,0.8834,0.56,0.4128,4.1642,0.9857,0.6186,0.9898,0.4858,0.4153,16.0,48.0
++lulc,0.4868,0.9036,0.5909,0.4482,4.0048,0.9899,0.6812,0.9922,0.5278,0.4371,16.0,48.0
++hydro,0.4666,0.9138,0.5859,0.4391,3.632,0.9902,0.6861,0.9929,0.5506,0.4859,16.0,48.0
++rain (full),0.48,0.8962,0.5887,0.4424,3.4398,0.9891,0.6716,0.9923,0.5396,0.484,16.0,48.0

@@ -1,0 +1,10 @@
+model,connectivity,cutoff,F1_flood,IoU_flood,area_ratio_flood_median,F1_all,F1_2022,area_ratio_2022,F1_2020,F1_big_floods
+XGBoost (original),True,level-aware,0.6436,0.5031,1.2164,0.5476,0.6381,0.6892,0.6102,0.6241
+XGBoost (original),False,level-aware,0.6418,0.5007,1.2504,0.5454,0.643,0.6971,0.611,0.627
+XGBoost (original),False,fixed 0.90 (original live rule),0.6413,0.5002,1.1631,0.5453,0.6,0.5743,0.5835,0.5917
+"XGBoost, monotone in river level",False,level-aware,0.6431,0.5022,1.2234,0.5446,0.6706,0.7883,0.6169,0.6437
+"XGBoost, monotone in river level",False,single,0.6383,0.4969,1.1831,0.5432,0.6322,0.6732,0.5987,0.6155
+XGBoost (original),False,single,0.6366,0.495,1.1631,0.543,0.6,0.5743,0.5835,0.5917
+XGBoost (original),True,single,0.6377,0.4965,1.1432,0.5429,0.5953,0.5683,0.5809,0.5881
+"XGBoost, monotone in river level",True,level-aware,0.6433,0.5026,1.25,0.5423,0.6809,0.8244,0.6232,0.652
+"XGBoost, monotone in river level",True,single,0.6428,0.5023,1.2098,0.5418,0.6523,0.7286,0.6117,0.632

@@ -1,0 +1,47 @@
+{
+ "event": "E20220817",
+ "issue_day": "2022-08-15",
+ "valid_day": "2022-08-16",
+ "stage1_forecast_m": {
+  "Naraj": 27.97,
+  "Kishan Nagar": 16.19,
+  "Tarpur": 12.3
+ },
+ "observed_m": {
+  "Tikarpara": 70.5,
+  "Naraj": 27.47,
+  "Kishan Nagar": 15.93,
+  "Tarpur": 11.59
+ },
+ "scores": {
+  "forecast levels (operational)": {
+   "precision": 0.816,
+   "recall": 0.474,
+   "F1_Dice": 0.6,
+   "IoU_CSI": 0.428,
+   "area_ratio": 0.581,
+   "obs_flooded_cells": 4186.0,
+   "ROC_AUC": 0.968,
+   "PR_AUC": 0.719,
+   "naraj_m": 27.967
+  },
+  "observed levels (Stage-2 only)": {
+   "precision": 0.822,
+   "recall": 0.472,
+   "F1_Dice": 0.6,
+   "IoU_CSI": 0.429,
+   "area_ratio": 0.574,
+   "obs_flooded_cells": 4186.0,
+   "ROC_AUC": 0.968,
+   "PR_AUC": 0.723,
+   "naraj_m": 27.47
+  }
+ },
+ "top_shap_drivers_high_risk": {
+  "jrc_occurrence": 1.2400000095367432,
+  "dist_river_m": 1.2300000190734863,
+  "lc_bare_frac": 1.059999942779541,
+  "lc_water_frac": 0.30000001192092896,
+  "lvl_naraj": 0.25999999046325684
+ }
+}

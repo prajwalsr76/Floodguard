@@ -1,0 +1,12 @@
+# Private keys (Telegram bot token etc.) - copy config/alerts.example.json to config/alerts.json
+config/alerts.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Large data kept out of the repo (regenerate with scripts/gee + scripts/stage2)
+01_raw/spatial/events/flood_*.tif
+06_features/stage2_events/

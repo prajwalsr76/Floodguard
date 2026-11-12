@@ -1,0 +1,98 @@
+project_crs: EPSG:32645
+geographic_crs: EPSG:4326
+stations:
+  Tikarpara:
+    lat: 20.6209
+    lon: 84.8028
+    role: upstream_input
+    coords_verified: false
+    coords_source: OSM Tikarpada settlement (Angul) on the Mahanadi; gauge within
+      ~1-2 km. Replace with raw-CSV Latitude/Longitude when available
+  Naraj:
+    lat: 20.468889
+    lon: 85.758889
+    role: primary_target
+    coords_verified: true
+    coords_source: CWC/NWDP station metadata (Naraj, Mahanadi, Cuttack Sadar) from
+      02_reference rainfall file
+  Kishan Nagar:
+    lat: 20.4264
+    lon: 86.0823
+    role: downstream_target
+    coords_verified: false
+    coords_source: OSM Kishannagar village (Cuttack); gauge within ~1-2 km. Replace
+      with raw-CSV Latitude/Longitude
+  Tarpur:
+    lat: 20.350556
+    lon: 86.206667
+    role: downstream_target
+    coords_verified: true
+    coords_source: CWC/NWDP station metadata (Tarapur, Mahanadi, Cuttack Sadar) from
+      02_reference rainfall file
+thresholds:
+  Naraj:
+    warning: 25.41
+    danger: 26.41
+    hfl: 27.61
+    source: CWC bulletin 14.08.2022; DoWR Odisha bulletin 15.07.2024 (HFL 27.60 m,
+      31.08.1982)
+  Kishan Nagar:
+    warning: 14.36
+    danger: 15.13
+    hfl: null
+    source: 'DERIVED: median same-day level when Naraj is within +/-0.25 m of its
+      warning/danger level (n=51/11 days, 2015-2025). No official level published'
+  Tarpur:
+    warning: 9.78
+    danger: 10.58
+    hfl: null
+    source: 'DERIVED: median same-day level when Naraj is within +/-0.25 m of its
+      warning/danger level (n=51/11 days, 2015-2025). No official level published'
+  Tikarpara:
+    warning: null
+    danger: null
+    hfl: 74.98
+    source: DoWR Odisha bulletin 15.07.2024 (HFL 30.08.1982); no warning/danger level
+      published
+qc:
+  bound_margin_m: 1.0
+  intraday_spike_m: 2.5
+  intraday_range_m: 3.0
+  spike_rule_exempt:
+  - Tikarpara
+  isolated_day_gap_days: 7
+stage1:
+  horizon_days: 1
+  targets:
+  - Naraj
+  - Kishan Nagar
+  - Tarpur
+  upstream_of:
+    Naraj:
+    - Tikarpara
+    - Naraj
+    Kishan Nagar:
+    - Tikarpara
+    - Naraj
+    - Kishan Nagar
+    Tarpur:
+    - Tikarpara
+    - Naraj
+    - Tarpur
+  lags_days: 7
+  split:
+    train:
+    - '2014-01-01'
+    - '2020-12-31'
+    val:
+    - '2021-01-01'
+    - '2021-12-31'
+    test:
+    - '2022-01-01'
+    - '2025-12-31'
+  rainfall_csv: 06_features/chirps_daily_subcatchments.csv
+stage2:
+  grid_resolution_m: 100
+  aoi_geojson: 00_project/aoi/aoi_floodplain.geojson
+  rasters_dir: 01_raw/spatial
+  events_csv: 00_project/aoi/flood_events.csv

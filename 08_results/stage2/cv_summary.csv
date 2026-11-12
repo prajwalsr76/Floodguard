@@ -1,0 +1,5 @@
+,precision_flood_events,recall_flood_events,F1_Dice_flood_events,IoU_CSI_flood_events,area_ratio_flood_events,ROC_AUC_flood_events,PR_AUC_flood_events,ROC_AUC_all_events,PR_AUC_all_events,F1_Dice_all_events,n_flood_events,n_events
+Bathtub,0.0894,0.816,0.1564,0.0868,12.2641,0.6989,0.1461,0.7354,0.107,0.1153,16.0,48.0
+LogReg,0.4658,0.4632,0.4265,0.29,1.28,0.8801,0.4462,0.8996,0.348,0.3515,16.0,48.0
+RandomForest,0.4979,0.4954,0.4608,0.319,1.1658,0.9005,0.5254,0.9144,0.4238,0.3862,16.0,48.0
+XGBoost,0.4727,0.5246,0.4636,0.3228,1.3218,0.901,0.5264,0.9134,0.421,0.373,16.0,48.0

@@ -1,0 +1,14 @@
+station,date,action,detail
+Kishan Nagar,2018-09-09,drop_isolated_day,"mean=9.60, n=1"
+Naraj,2014-04-29,drop_isolated_day,"mean=25.75, n=7"
+Naraj,2019-08-04,remove_corrupt_min,"value=2.28 (out_of_range; bounds=[19.04,27.96]); mean 21.46->22.30"
+Tarpur,2019-07-12,remove_corrupt_max,"value=71.10 (out_of_range; bounds=[4.21,12.62]); mean 9.88->7.09"
+Tarpur,2020-06-18,remove_corrupt_min,"value=0.25 (out_of_range; bounds=[4.21,12.62]); mean 6.07->6.33"
+Tarpur,2020-08-16,remove_corrupt_min,"value=4.60 (intraday_spike; bounds=[4.21,12.62]); mean 7.46->7.59"
+Tarpur,2020-09-23,remove_corrupt_max,"value=356.32 (out_of_range; bounds=[4.21,12.62]); mean 68.05->54.95"
+Tarpur,2020-09-23,null_implausible_mean,mean=54.95
+Tikarpara,2019-08-07,remove_corrupt_min,"value=36.45 (out_of_range; bounds=[52.80,71.92]); mean 54.92->55.72"
+Tikarpara,2025-06-20,remove_corrupt_min,"value=5.10 (out_of_range; bounds=[52.80,71.92]); mean 53.07->55.16"
+Naraj,2022-08-16,null_regional_coherent_dip,max=25.93 m; same-day V-dip at 3 corridor gauges
+Kishan Nagar,2022-08-16,null_regional_coherent_dip,max=14.62 m; same-day V-dip at 3 corridor gauges
+Tarpur,2022-08-16,null_regional_coherent_dip,max=10.05 m; same-day V-dip at 3 corridor gauges

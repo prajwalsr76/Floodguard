@@ -1,0 +1,23 @@
+label definition: connected
+48 events, 11 years, 7818921 rows, features 19
+Bathtub      {'F1_Dice_flood_events': 0.063, 'IoU_CSI_flood_events': 0.033, 'area_ratio_flood_events': 39.218, 'ROC_AUC_all_events': 0.755}
+LogReg       {'F1_Dice_flood_events': 0.529, 'IoU_CSI_flood_events': 0.377, 'area_ratio_flood_events': 4.029, 'ROC_AUC_all_events': 0.989}
+RandomForest {'F1_Dice_flood_events': 0.59, 'IoU_CSI_flood_events': 0.445, 'area_ratio_flood_events': 3.68, 'ROC_AUC_all_events': 0.992}
+XGBoost      {'F1_Dice_flood_events': 0.589, 'IoU_CSI_flood_events': 0.442, 'area_ratio_flood_events': 3.44, 'ROC_AUC_all_events': 0.992}
+ablation terrain        {'F1_Dice_flood_events': 0.331, 'IoU_CSI_flood_events': 0.204, 'ROC_AUC_all_events': 0.949}
+ablation +river         {'F1_Dice_flood_events': 0.56, 'IoU_CSI_flood_events': 0.413, 'ROC_AUC_all_events': 0.99}
+ablation +lulc          {'F1_Dice_flood_events': 0.591, 'IoU_CSI_flood_events': 0.448, 'ROC_AUC_all_events': 0.992}
+ablation +hydro         {'F1_Dice_flood_events': 0.586, 'IoU_CSI_flood_events': 0.439, 'ROC_AUC_all_events': 0.993}
+ablation +rain (full)   {'F1_Dice_flood_events': 0.589, 'IoU_CSI_flood_events': 0.442, 'ROC_AUC_all_events': 0.992}
+
+SHAP global importance:
+ dist_river_m      3.117
+jrc_occurrence    1.184
+lc_bare_frac      0.709
+lc_tree_frac      0.651
+lvl_naraj         0.448
+lc_water_frac     0.398
+lc_crop_frac      0.249
+slope_deg         0.242
+lvl_near          0.201
+har_m             0.183

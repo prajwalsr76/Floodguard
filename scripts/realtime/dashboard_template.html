@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FloodGuard Live</title>
+<meta name="description" content="Two-stage flood early warning for the Mahanadi delta (Naraj, Kishan Nagar, Tarpur), Odisha.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
+<style>
+/* FloodGuard: a civic warning board. Cool silt-grey ground, white boards with thin rules,
+   one loud element: the status band, coloured by the alert level. Colour is reserved for
+   risk; everything else is ink on paper. */
+:root{
+  --paper:#eef2f3; --board:#ffffff; --ink:#0f2a3a; --muted:#506574; --faint:#8a9aa5; --rule:#d6dfe3; --rule2:#e6ecef;
+  --river:#1b6e9e; --river-soft:#e3f0f7;
+  --normal:#1f7a54; --watch:#a87a00; --warning:#cf5c0c; --danger:#b42318; --delayed:#64737e;
+  --band-ink:#ffffff;
+  --chart-obs:#0f2a3a; --chart-fc:#1b6e9e; --chart-band:rgba(27,110,158,.16);
+  --font:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --r:10px; --r-s:6px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0d1a21; --board:#13242d; --ink:#e4edf1; --muted:#9db0bb; --faint:#6f8591; --rule:#24404d; --rule2:#1b323d;
+  --river:#62b4e2; --river-soft:#16313f;
+  --normal:#3fb984; --watch:#e2b33a; --warning:#f08a3a; --danger:#ff6b5e; --delayed:#8796a1;
+  --chart-obs:#e4edf1; --chart-fc:#62b4e2; --chart-band:rgba(98,180,226,.18); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0d1a21; --board:#13242d; --ink:#e4edf1; --muted:#9db0bb; --faint:#6f8591; --rule:#24404d; --rule2:#1b323d;
+  --river:#62b4e2; --river-soft:#16313f;
+  --normal:#3fb984; --watch:#e2b33a; --warning:#f08a3a; --danger:#ff6b5e; --delayed:#8796a1;
+  --chart-obs:#e4edf1; --chart-fc:#62b4e2; --chart-band:rgba(98,180,226,.18); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 var(--font);font-variant-numeric:tabular-nums}
+.wrap{max-width:1280px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left)) 56px max(16px,env(safe-area-inset-right))}
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance}
+h2{font-size:1.08rem;font-weight:700}
+h3{font-size:.95rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:.84rem} .tiny{font-size:.76rem}
+a{color:var(--river)}
+:focus-visible{outline:3px solid var(--river);outline-offset:2px;border-radius:4px}
+button{font:inherit;color:inherit}
+
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;min-width:0}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-size:1.15rem;font-weight:800;letter-spacing:-.01em;display:block}
+.brand span{font-size:.82rem;color:var(--muted);display:block}
+.conn{display:flex;align-items:center;gap:9px;padding:7px 12px;border:1px solid var(--rule);border-radius:999px;background:var(--board);font-size:.82rem;min-width:0}
+.conn .dot{width:9px;height:9px;border-radius:50%;background:var(--faint);flex:none}
+.conn.live .dot{background:var(--normal);animation:pulse 2.4s ease-in-out infinite}
+.conn.demo .dot{background:var(--watch)}
+.conn.err .dot,.conn.stale .dot{background:var(--danger)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--normal) 55%,transparent)}50%{box-shadow:0 0 0 6px transparent}}
+.conn b{font-weight:700}
+.btn{border:1px solid var(--rule);background:var(--board);border-radius:var(--r-s);padding:7px 12px;font-size:.84rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--river);color:var(--river)}
+.btn.primary{background:var(--river);border-color:var(--river);color:#fff}
+.btn.primary:hover{filter:brightness(1.08);color:#fff}
+.btn[disabled]{opacity:.5;cursor:default}
+.iconbtn{width:36px;height:36px;padding:0;display:grid;place-items:center}
+
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-bottom:18px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;background:var(--paper);z-index:20}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:11px 14px;font-weight:600;font-size:.92rem;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--river)}
+section.view{display:flex;flex-direction:column;gap:18px}
+
+/* ---------- status band: the one loud element ---------- */
+.band{--lv:var(--normal);background:var(--lv);color:var(--band-ink);border-radius:var(--r);padding:22px 24px;display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,1.85fr);gap:22px;align-items:stretch;position:relative;overflow:hidden}
+/* band colours stay deep in both themes so white text keeps its contrast */
+.band.l-GREEN{--lv:#1f7a54} .band.l-YELLOW{--lv:#d9a514} .band.l-ORANGE{--lv:#c2550a} .band.l-RED{--lv:#b42318} .band.l-DELAYED{--lv:#5a6873}
+.band.l-YELLOW{--band-ink:#1d1600}
+.band .word{font-size:clamp(2.6rem,1.6rem + 3.6vw,4.4rem);font-weight:800;letter-spacing:-.035em;line-height:.95}
+.band .head{font-size:1.18rem;font-weight:700;margin-top:10px;max-width:34ch}
+.band .todo{margin-top:10px;font-size:.92rem;opacity:.94;max-width:46ch}
+.band .meta{margin-top:14px;font-size:.78rem;opacity:.85}
+.gauges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gtile{background:color-mix(in srgb,#ffffff 14%,transparent);border:1px solid color-mix(in srgb,#ffffff 30%,transparent);border-radius:var(--r-s);padding:12px 13px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.band.l-YELLOW .gtile{background:color-mix(in srgb,#000 6%,transparent);border-color:color-mix(in srgb,#000 16%,transparent)}
+.gtile .nm{display:flex;justify-content:space-between;gap:6px;font-weight:700;font-size:.9rem}
+.gtile .st{font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:999px;background:#fff;color:#0f2a3a;white-space:nowrap}
+.gtile .st.s-YELLOW{color:#8a6400} .gtile .st.s-ORANGE{color:#c2550a} .gtile .st.s-RED{color:#b42318} .gtile .st.s-GREEN{color:#1f7a54} .gtile .st.s-NONE{color:#5a6873}
+.gtile .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.8rem}
+.gtile .big{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.gtile .big small{font-size:.8rem;font-weight:500;opacity:.8}
+.staff{height:10px;border-radius:5px;background:color-mix(in srgb,#ffffff 22%,transparent);position:relative;margin:4px 0 2px}
+.band.l-YELLOW .staff{background:color-mix(in srgb,#000 12%,transparent)}
+.staff i{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px}
+.staff .now{position:absolute;top:0;bottom:0;left:0;border-radius:5px;background:currentColor;opacity:.55}
+.staff .fc{position:absolute;top:-5px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid currentColor;transform:translateX(-6px)}
+.gtile .gfoot{font-size:.74rem;font-weight:500;line-height:1.4;color:inherit}
+@media (max-width:960px){.band{grid-template-columns:1fr}}
+@media (max-width:620px){.gauges{grid-template-columns:1fr}}
+
+.notice{border:1px solid var(--rule);border-left:5px solid var(--delayed);background:var(--board);border-radius:var(--r-s);padding:12px 16px;font-size:.9rem}
+.notice.warn{border-left-color:var(--warning)}
+.notice.demo{border-left-color:var(--watch)}
+.notice b{font-weight:700}
+
+/* ---------- boards ---------- */
+.board{background:var(--board);border:1px solid var(--rule);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.bhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.bhead > div:first-child{display:flex;flex-direction:column;gap:3px;max-width:72ch}
+details.board > summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px}
+details.board > summary::-webkit-details-marker{display:none}
+details.board > summary::after{content:"Show";font-size:.8rem;font-weight:600;color:var(--river)}
+details.board[open] > summary::after{content:"Hide"}
+.g-map{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:18px}
+.g2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px}
+.g2e{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:1040px){.g-map,.g2,.g2e{grid-template-columns:1fr}}
+
+.seg{display:inline-flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);border-radius:var(--r-s);overflow:hidden;max-width:100%}
+.seg button{border:0;border-right:1px solid var(--rule);background:var(--board);padding:6px 11px;font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--river-soft);color:var(--river)}
+
+/* map */
+.mapbox{position:relative;width:100%;aspect-ratio:767/435;border-radius:var(--r-s);overflow:hidden;background:var(--rule2);border:1px solid var(--rule)}
+.mapbox img,.mapbox svg,.mapbox canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:auto}
+.mapbox .lbl{font:600 10px var(--font);fill:var(--ink);paint-order:stroke;stroke:var(--board);stroke-width:3px}
+.mapbox .lbl.hi{font-weight:800;font-size:12px}
+.mapbox .gauge{fill:var(--ink);stroke:var(--board);stroke-width:1.5}
+.mapbox .gauge-lbl{font:800 11px var(--font);fill:var(--ink);paint-order:stroke;stroke:var(--board);stroke-width:3.5px}
+.mapbox .busy{position:absolute;right:10px;bottom:10px;font-size:.78rem;padding:4px 10px;border-radius:999px;background:var(--board);color:var(--muted);border:1px solid var(--rule)}
+.mapkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted)}
+.mapkey i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.slider{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.86rem}
+.slider input{flex:1;min-width:160px;accent-color:var(--river)}
+
+/* areas at risk */
+.areas{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sum3 div{border:1px solid var(--rule);border-radius:var(--r-s);padding:8px 10px;display:flex;flex-direction:column}
+.sum3 b{font-size:1.25rem;font-weight:800}
+.sum3 span{font-size:.74rem;color:var(--muted)}
+.search{width:100%;border:1px solid var(--rule);border-radius:var(--r-s);padding:8px 10px;background:var(--paper);color:var(--ink);font:inherit;font-size:.9rem}
+.alist{display:flex;flex-direction:column;gap:2px;max-height:430px;overflow:auto;margin:0 -6px;padding:0 6px}
+.agrp{font-size:.78rem;font-weight:700;color:var(--muted);padding:8px 2px 4px;display:flex;align-items:center;gap:7px}
+.agrp i{width:10px;height:10px;border-radius:2px}
+.aitem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px 10px;border-radius:var(--r-s);border:1px solid transparent;cursor:pointer;background:none;text-align:left;width:100%}
+.aitem:hover{background:var(--paper)}
+.aitem[aria-pressed="true"]{border-color:var(--river);background:var(--river-soft)}
+.aitem .n{font-weight:700;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aitem .k{font-weight:700;font-size:.86rem}
+.aitem .d{grid-column:1/-1;font-size:.76rem;color:var(--muted)}
+.r3 .k{color:var(--danger)} .r2 .k{color:var(--warning)} .r1 .k{color:var(--watch)}
+.empty{padding:18px 6px;color:var(--muted);font-size:.88rem}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.88rem;max-width:72ch}
+.tgrow{display:flex;gap:8px;flex-wrap:wrap}.tgrow .search{flex:1;min-width:220px}
+
+/* charts */
+.chart{width:100%}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{fill:var(--muted);font:11px var(--font)}
+.grid line{stroke:var(--rule2)}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.outlook{width:100%;border-collapse:collapse;font-size:.86rem}
+.outlook th,.outlook td{padding:6px 8px;border-bottom:1px solid var(--rule2);text-align:right}
+.outlook th:first-child,.outlook td:first-child{text-align:left}
+.outlook th{font-size:.74rem;color:var(--muted);font-weight:600}
+
+/* alerts + health */
+.alog{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow:auto}
+.aent{border:1px solid var(--rule);border-left:4px solid var(--delayed);border-radius:var(--r-s);padding:9px 12px;font-size:.84rem}
+.aent.l-GREEN{border-left-color:var(--normal)} .aent.l-YELLOW{border-left-color:var(--watch)} .aent.l-ORANGE{border-left-color:var(--warning)} .aent.l-RED{border-left-color:var(--danger)}
+.aent .t{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.aent .t span{font-weight:400;color:var(--muted);font-size:.76rem}
+.aent pre{margin:6px 0 0;font:inherit;font-size:.8rem;white-space:pre-wrap;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.76rem;padding:3px 9px;border-radius:999px;border:1px solid var(--rule);color:var(--muted)}
+.chip.on{border-color:var(--normal);color:var(--normal);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--rule2);vertical-align:top}
+th{font-size:.75rem;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right}
+tr.best td{color:var(--river);font-weight:700}
+.tablebox{overflow-x:auto}
+.ok{color:var(--normal);font-weight:700} .bad{color:var(--danger);font-weight:700} .meh{color:var(--watch);font-weight:700}
+.bulletin{font-size:.86rem;white-space:pre-wrap;line-height:1.6;border:1px solid var(--rule);border-radius:var(--r-s);padding:12px 14px;background:var(--paper);overflow-wrap:anywhere}
+.eq{font:.82rem/1.7 ui-monospace,Consolas,monospace;white-space:pre;overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r-s);padding:12px 14px;background:var(--paper)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpis.k3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.kpis.k2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis.k3{grid-template-columns:1fr}}
+.kpi{border:1px solid var(--rule);border-radius:var(--r-s);padding:10px 12px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.kpi .v{font-size:1.35rem;font-weight:800;letter-spacing:-.01em}
+.kpi .l{font-size:.78rem;color:var(--muted);font-weight:600}
+.kpi .s{font-size:.76rem;color:var(--muted)}
+.cls{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.74rem;font-weight:700;white-space:nowrap;border:1px solid currentColor}
+.c0{color:var(--muted)} .c1{color:var(--watch)} .c2{color:var(--warning)} .c3{color:var(--danger)} .lead1{color:var(--river)} .lead2{color:var(--normal)}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 90px 50px;gap:8px;align-items:center;font-size:.82rem}
+.bar .track{height:8px;border-radius:4px;position:relative;background:var(--rule2)}
+.bar .fill{position:absolute;top:0;bottom:0;border-radius:4px}
+.bar .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .v{text-align:right;color:var(--muted)}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:980px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.flow{grid-template-columns:1fr}}
+.stepc{border:1px solid var(--rule);border-radius:var(--r-s);padding:14px;display:flex;flex-direction:column;gap:6px}
+.stepc .no{font-weight:800;color:var(--river)}
+.stepc p{font-size:.85rem;color:var(--muted)}
+.prose{display:flex;flex-direction:column;gap:10px;max-width:76ch}
+.prose ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.prose li,.prose p{font-size:.9rem}
+.foot{font-size:.78rem;color:var(--faint);text-align:center;max-width:84ch;margin:26px auto 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:var(--r-s);font-size:.9rem;font-weight:600;z-index:50;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:calc(100vw - 32px)}
+.menu{position:relative}
+.menu .pop{position:absolute;right:0;top:calc(100% + 6px);background:var(--board);border:1px solid var(--rule);border-radius:var(--r);padding:12px;width:min(340px,calc(100vw - 32px));z-index:40;box-shadow:0 12px 32px rgba(0,0,0,.14);display:flex;flex-direction:column;gap:8px}
+.menu .pop button.opt{border:1px solid var(--rule);background:var(--board);border-radius:var(--r-s);padding:9px 11px;text-align:left;cursor:pointer;font-size:.86rem}
+.menu .pop button.opt:hover{border-color:var(--river)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{nav.tabs,.top .btn,.menu{display:none!important}.board{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="8" fill="var(--river)"/><path d="M17 6c4.6 6 7.4 9.8 7.4 13.3a7.4 7.4 0 0 1-14.8 0C9.6 15.8 12.4 12 17 6Z" fill="#fff"/><path d="M10.6 21.3c2 1.2 4 1.2 6.4 0s4.4-1.2 6.4 0" stroke="var(--river)" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      <div><b>FloodGuard</b><span>Flood early warning, Mahanadi delta, Cuttack district (Odisha)</span></div>
+    </div>
+    <div class="conn" id="conn" aria-live="polite"><span class="dot"></span><span id="connText">Loading</span></div>
+    <button class="btn" id="refreshBtn" type="button" hidden>Update now</button>
+    <div class="menu">
+      <button class="btn" id="demoBtn" type="button" aria-expanded="false">Demo flood</button>
+      <div class="pop" id="demoPop" hidden></div>
+    </div>
+    <button class="btn iconbtn" id="themeBtn" type="button" aria-label="Switch light or dark theme" title="Light / dark">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" data-v="live" aria-selected="true">Live warning</button>
+    <button class="tab" role="tab" data-v="alerts" aria-selected="false">Alerts and data</button>
+    <button class="tab" role="tab" data-v="season" aria-selected="false">2026 season test</button>
+    <button class="tab" role="tab" data-v="validation" aria-selected="false">Accuracy 2015–2025</button>
+    <button class="tab" role="tab" data-v="method" aria-selected="false">How it works</button>
+  </nav>
+
+  <!-- ============================== LIVE ============================== -->
+  <section class="view" id="v-live">
+    <div class="band" id="band" aria-live="polite"></div>
+    <div id="notices"></div>
+
+    <div class="g-map">
+      <div class="board">
+        <div class="bhead">
+          <div><h2>Where the water is expected</h2><p class="muted small" id="mapSub"></p></div>
+          <div class="seg" id="mapSeg" role="group" aria-label="Map scenario"></div>
+        </div>
+        <div class="mapbox" id="map"></div>
+        <div class="slider" id="ladderBox" hidden>
+          <button class="btn" id="playBtn" type="button">Play</button>
+          <input type="range" id="ladder" min="0" max="10" step="1" value="5" aria-label="Naraj water level for the what-if map">
+          <b id="ladderVal"></b><span class="muted small" id="ladderNote"></span>
+        </div>
+        <div class="mapkey" id="mapKey"></div>
+      </div>
+      <div class="board areas">
+        <div class="bhead"><div><h2>Areas at risk</h2><p class="muted small" id="areasSub">Each patch of land is named after its nearest town or village.</p></div></div>
+        <div class="sum3" id="areaSum"></div>
+        <input class="search" id="areaSearch" type="search" placeholder="Find a village or town" aria-label="Find a village or town">
+        <div class="alist" id="areaList"></div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="board">
+        <div class="bhead">
+          <div><h2>River level and forecast</h2><p class="muted small">Last 7 days of CWC readings and the forecast daily highest level for the next three days, with an 80% range.</p></div>
+          <div class="seg" id="hydroSeg"></div>
+        </div>
+        <div class="chart" id="hydro"></div>
+        <div class="legend" id="hydroLegend"></div>
+        <table class="outlook" id="outlook"></table>
+      </div>
+      <div class="board">
+        <div class="bhead"><div><h2>Rainfall over the catchment</h2><p class="muted small">Daily rain in mm, last 14 days and the 7-day forecast.</p></div></div>
+        <div class="seg" id="rainSeg"></div>
+        <div class="chart" id="rain"></div>
+      </div>
+    </div>
+
+    <div class="g2e">
+      <details class="board" id="bulBox" open>
+        <summary><h2>Warning message</h2></summary>
+        <p class="muted small">Plain text for a control room, an SMS or a WhatsApp group. Generated from this update.</p>
+        <div class="bulletin" id="bulletin"></div>
+        <div><button class="btn" id="copyBul" type="button">Copy message</button></div>
+      </details>
+      <details class="board">
+        <summary><h2>How tomorrow's Naraj forecast was worked out</h2></summary>
+        <div class="eq" id="worked"></div>
+        <div id="shapBox"><h3 style="margin-bottom:8px">Why the map shows flooding where it does</h3><div class="bars" id="shap"></div></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================== ALERTS & DATA ============================== -->
+  <section class="view" id="v-alerts" hidden>
+    <div class="g2e">
+      <div class="board">
+        <div class="bhead"><div><h2>Alerts sent</h2><p class="muted small">An alert goes out when the level goes up, and when it comes down after two updates in a row. Nobody has to press anything.</p></div></div>
+        <div class="alog" id="alertLog"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+      <div class="board">
+        <div class="bhead"><div><h2>Where alerts go</h2><p class="muted small" id="chanSub"></p></div></div>
+        <div class="chips" id="chans"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" id="testBtn" type="button">Send a test alert</button>
+          <button class="btn" id="notifBtn" type="button">Show pop-ups in this browser</button>
+        </div>
+      </div>
+      <div class="board" id="tgBox">
+        <div class="bhead"><div><h2>Get alerts on your phone (Telegram, free)</h2><p class="muted small" id="tgState">Takes about two minutes, once.</p></div></div>
+        <ol class="steps">
+          <li>In Telegram, open <b>@BotFather</b>, send <b>/newbot</b> and choose any name, for example "FloodGuard Mahanadi". Copy the token it gives you.</li>
+          <li>Paste the token here and press Connect.</li>
+          <li>Open your new bot from the link that appears, press <b>Start</b>, then press Connect again. Everyone who presses Start gets the alerts, so family, friends or a whole Telegram group can join.</li>
+        </ol>
+        <div class="tgrow"><input class="search" id="tgToken" type="password" autocomplete="off" spellcheck="false" placeholder="Bot token from @BotFather, for example 123456789:AA..." aria-label="Telegram bot token">
+          <button class="btn primary" id="tgConnect" type="button">Connect</button></div>
+        <p class="small" id="tgMsg" aria-live="polite"></p>
+        <p class="muted tiny">The token is saved only in config/alerts.json on this computer. E-mail and SMS can be added in the same file (docs/ALERTS_SETUP.md).</p>
+      </div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="bhead"><div><h2>Data health</h2><p class="muted small">FloodGuard checks every reading before using it. A gauge is marked late when its last reading is more than <span id="staleH">6</span> hours old.</p></div></div>
+      <div class="tablebox" id="health"></div>
+    </div>
+  </section>
+
+  <!-- ============================== SEASON ============================== -->
+  <section class="view" id="v-season" hidden>
+    <div class="board">
+      <div class="bhead">
+        <div><h2>Monsoon 2026: a season the models never saw</h2><p class="muted small" id="seasonIntro"></p></div>
+        <div class="seg" id="seasonSeg"></div>
+      </div>
+      <div class="kpis" id="seasonKpis"></div>
+      <div class="chart" id="seasonChart"></div>
+      <div class="legend"><span><i style="background:var(--chart-obs)"></i>observed daily highest level</span><span><i style="background:var(--chart-fc)"></i>forecast issued the day before</span><span><i style="background:var(--chart-band);height:10px"></i>80% range</span></div>
+    </div>
+    <div class="g2e">
+      <div class="board">
+        <div class="bhead"><div><h2>Advance notice before each flood</h2><p class="muted small">Every 2026 day a gauge rose above its warning level, and how early FloodGuard flagged it.</p></div></div>
+        <div class="kpis k3" id="leadKpis"></div>
+        <div class="tablebox" id="leadTable"></div>
+      </div>
+      <div class="board">
+        <div class="bhead"><div><h2>Warning-level days, all three gauges</h2><p class="muted small">FloodGuard against the simple rule "tomorrow equals today".</p></div></div>
+        <div class="tablebox" id="seasonTable"></div>
+        <div class="chart" id="areaChart"></div>
+        <p class="muted tiny">Bars: forecast flood-likely area each day (km², left axis). Line: observed Naraj level (m, right axis).</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="bhead">
+        <div><h2>Flood maps checked against satellite radar, 2026</h2><p class="muted small">Sentinel-1 radar scenes of 2026 floods, a year no model saw. The map is what FloodGuard would have issued the day before.</p></div>
+        <div class="seg" id="s1Seg"></div>
+      </div>
+      <div class="g2">
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="seg" id="s1Layer" style="align-self:flex-start"></div>
+          <div class="mapbox" id="s1Map"></div>
+          <div class="mapkey" id="s1Key"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div class="kpis k2" id="s1Kpis"></div>
+          <p class="muted small" id="s1Note"></p>
+          <div class="tablebox" id="s1Table"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== VALIDATION ============================== -->
+  <section class="view" id="v-validation" hidden>
+    <div class="g2">
+      <div class="board">
+        <div class="bhead"><div><h2>When: next-day river level, test years 2022–2025</h2><p class="muted small" id="valIntro"></p></div><div class="seg" id="valSeg"></div></div>
+        <div class="tablebox" id="valTable"></div>
+      </div>
+      <div class="board">
+        <div class="bhead"><div><h2>How far ahead it works</h2><p class="muted small">Skill compared with "tomorrow equals today" (1 = perfect, 0 = no better).</p></div></div>
+        <div class="chart" id="leadChart"></div>
+        <div class="legend" id="leadLegend"></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="bhead"><div><h2>Where: flood map accuracy, 48 radar scenes 2015–2025</h2><p class="muted small">Each year is held out in turn: the model is trained without it and then scored on it.</p></div></div>
+      <div class="kpis" id="s2Kpis"></div>
+      <div class="tablebox" id="s2Table"></div>
+      <div class="tablebox" id="s2Events"></div>
+    </div>
+    <div class="board">
+      <div class="bhead">
+        <div><h2>Four floods replayed end to end, 2022–2025</h2><p class="muted small">Stage 1 forecast issued the day before, then the map model trained without that year, scored against radar.</p></div>
+        <div class="seg" id="caseSeg"></div>
+      </div>
+      <div class="g2">
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="seg" id="caseLayer" style="align-self:flex-start"></div>
+          <div class="mapbox" id="caseMap"></div>
+          <div class="mapkey" id="caseKey"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div class="kpis k2" id="caseKpis"></div>
+          <p class="muted small" id="caseNote"></p>
+        </div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="bhead"><div><h2>What the map model relies on</h2><p class="muted small">Average influence of each input (mean |SHAP|).</p></div></div>
+      <div class="bars" id="shapGlobal"></div>
+    </div>
+  </section>
+
+  <!-- ============================== METHOD ============================== -->
+  <section class="view" id="v-method" hidden>
+    <div class="board">
+      <div class="bhead"><div><h2>Two stages: first when, then where</h2><p class="muted small">Stage 1 forecasts the river level at three gauges. Stage 2 turns those levels into a 100 m flood map.</p></div></div>
+      <div class="flow" id="flow1"></div>
+      <div class="flow" id="flow2"></div>
+    </div>
+    <div class="g2e">
+      <div class="board"><h2>Equations as implemented</h2><div class="eq" id="eqs"></div></div>
+      <div class="board"><h2>How the live system runs</h2><div class="prose" id="liveHow"></div><div class="tablebox" id="sourcesTable"></div></div>
+    </div>
+    <div class="g2e">
+      <div class="board">
+        <h2>Alert levels</h2>
+        <table><thead><tr><th>Level</th><th>Rule, on tomorrow's forecast at any of the three gauges</th></tr></thead><tbody>
+          <tr><td><span class="cls" style="color:var(--normal)">Normal</span></td><td>More than 0.5 m below the warning level, and the 80% range stays below it</td></tr>
+          <tr><td><span class="cls" style="color:var(--watch)">Watch</span></td><td>Within 0.5 m of the warning level, or the 80% range reaches it</td></tr>
+          <tr><td><span class="cls" style="color:var(--warning)">Warning</span></td><td>At or above the warning level</td></tr>
+          <tr><td><span class="cls" style="color:var(--danger)">Danger</span></td><td>At or above the danger level</td></tr>
+          <tr><td><span class="cls" style="color:var(--delayed)">Data delayed</span></td><td>A forecast gauge has sent no reading for more than 6 hours: the level is not updated and no "all clear" is sent</td></tr>
+        </tbody></table>
+      </div>
+      <div class="board"><h2>Limitations</h2><div class="prose" id="limits"></div></div>
+    </div>
+  </section>
+
+  <p class="foot">FloodGuard is a final-year research prototype, not an official warning. Always follow the Central Water Commission (CWC), OSDMA and district administration. Water levels: CWC. Rain: CHIRPS and Open-Meteo. Radar: Copernicus Sentinel-1. Terrain and land cover: SRTM, ESA WorldCover, JRC. Places: © OpenStreetMap contributors.</p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>__FG_ENGINE__</script>
+<script type="application/json" id="fgdata">__FG_DATA__</script>
+<script>__FG_APP__</script>
+</body>
+</html>

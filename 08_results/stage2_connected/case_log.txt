@@ -1,0 +1,8 @@
+label=connected, decision threshold=0.90
+  Naraj 2022-08-16: interpolated 27.47 m from 2022-08-15 / 2022-08-17
+  Kishan Nagar 2022-08-16: interpolated 15.93 m from 2022-08-15 / 2022-08-17
+  Tarpur 2022-08-16: interpolated 11.59 m from 2022-08-15 / 2022-08-17
+{"event": "E20220817", "issue": "2022-08-15", "naraj_fc": 27.97, "naraj_obs": 27.47, "forecast_F1_Dice": 0.6, "forecast_IoU_CSI": 0.428, "forecast_area_ratio": 0.581, "forecast_ROC_AUC": 0.968, "observed_F1_Dice": 0.6, "observed_IoU_CSI": 0.429, "observed_area_ratio": 0.574, "observed_ROC_AUC": 0.968}
+{"event": "E20230916", "issue": "2023-09-15", "naraj_fc": 26.28, "naraj_obs": 25.96, "forecast_F1_Dice": 0.798, "forecast_IoU_CSI": 0.664, "forecast_area_ratio": 1.154, "forecast_ROC_AUC": 0.997, "observed_F1_Dice": 0.785, "observed_IoU_CSI": 0.647, "observed_area_ratio": 1.316, "observed_ROC_AUC": 0.997}
+{"event": "E20240809", "issue": "2024-08-09", "naraj_fc": 25.1, "naraj_obs": 24.98, "forecast_F1_Dice": 0.76, "forecast_IoU_CSI": 0.612, "forecast_area_ratio": 0.994, "forecast_ROC_AUC": 0.995, "observed_F1_Dice": 0.744, "observed_IoU_CSI": 0.593, "observed_area_ratio": 0.926, "observed_ROC_AUC": 0.995}
+{"event": "E20250907", "issue": "2025-09-06", "naraj_fc": 25.58, "naraj_obs": 25.99, "forecast_F1_Dice": 0.75, "forecast_IoU_CSI": 0.6, "forecast_area_ratio": 1.153, "forecast_ROC_AUC": 0.994, "observed_F1_Dice": 0.752, "observed_IoU_CSI": 0.602, "observed_area_ratio": 1.177, "observed_ROC_AUC": 0.994}

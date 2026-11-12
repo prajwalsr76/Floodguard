@@ -1,0 +1,10 @@
+{
+ "fetched_utc": "2026-10-21T10:40:00Z",
+ "source": "CWC Flood Forecasting System ffs.india-water.gov.in, datatype HHS",
+ "codes": {
+  "Tikarpara": "034-MDBURLA",
+  "Naraj": "036-MDBURLA",
+  "Kishan Nagar": "046-MDBURLA",
+  "Tarpur": "047-MDBURLA"
+ }
+}

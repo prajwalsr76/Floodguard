@@ -1,0 +1,66 @@
+
+=== Naraj | threshold 25.41 m (CWC warning level) | complete rows 3657 of 4128
+rows: train 2036  val 365  test 1256
+                MAE   RMSE    NSE  skill_vs_persistence  RMSE_top5pct  precision  recall    CSI
+model                                                                                          
+Persistence   0.091  0.234  0.961                 0.000         0.717      0.643   0.600  0.450
+Ridge         0.067  0.134  0.987                 0.674         0.440      0.875   0.933  0.824
+RandomForest  0.043  0.107  0.992                 0.791         0.352      0.882   1.000  0.882
+XGBoost       0.046  0.109  0.991                 0.781         0.369      0.867   0.867  0.765
+LSTM          0.057  0.134  0.987                 0.671         0.434      0.800   0.800  0.667
+GRU           0.057  0.130  0.988                 0.692         0.431      0.800   0.800  0.667
+  model              inputs  n_features  RMSE   NSE  skill_vs_persistence   CSI
+  Ridge                 own          21 0.207 0.969                 0.214 0.556
+XGBoost                 own          21 0.207 0.969                 0.214 0.412
+  Ridge        own+upstream          42 0.130 0.988                 0.689 0.722
+XGBoost        own+upstream          42 0.110 0.991                 0.779 0.632
+  Ridge own+upstream+season          45 0.130 0.988                 0.690 0.722
+XGBoost own+upstream+season          45 0.112 0.991                 0.772 0.667
+  Ridge    rain_only+season          35 0.221 0.965                 0.108 0.647
+XGBoost    rain_only+season          35 0.226 0.963                 0.062 0.526
+  Ridge         all (+rain)          77 0.134 0.987                 0.674 0.824
+XGBoost         all (+rain)          77 0.109 0.991                 0.781 0.765
+
+=== Kishan Nagar | threshold 14.36 m (Naraj-equivalent warning level (derived)) | complete rows 2293 of 2600
+rows: train 785  val 365  test 1143
+                MAE   RMSE    NSE  skill_vs_persistence  RMSE_top5pct  precision  recall    CSI
+model                                                                                          
+Persistence   0.171  0.256  0.934                 0.000         0.559      0.684    0.65  0.500
+Ridge         0.131  0.181  0.967                 0.500         0.262      0.800    0.80  0.667
+RandomForest  0.128  0.189  0.964                 0.454         0.328      0.882    0.75  0.682
+XGBoost       0.127  0.187  0.965                 0.467         0.317      0.833    0.75  0.652
+LSTM          0.131  0.185  0.965                 0.476         0.300      0.722    0.65  0.520
+GRU           0.130  0.183  0.966                 0.490         0.278      0.762    0.80  0.640
+  model              inputs  n_features  RMSE   NSE  skill_vs_persistence   CSI
+  Ridge                 own          21 0.269 0.927                -0.108 0.524
+XGBoost                 own          21 0.252 0.936                 0.031 0.565
+  Ridge        own+upstream          63 0.181 0.967                 0.498 0.696
+XGBoost        own+upstream          63 0.185 0.965                 0.475 0.652
+  Ridge own+upstream+season          66 0.180 0.967                 0.505 0.667
+XGBoost own+upstream+season          66 0.185 0.965                 0.476 0.652
+  Ridge    rain_only+season          35 0.250 0.937                 0.048 0.393
+XGBoost    rain_only+season          35 0.255 0.935                 0.010 0.423
+  Ridge         all (+rain)          98 0.181 0.967                 0.500 0.667
+XGBoost         all (+rain)          98 0.187 0.965                 0.467 0.652
+
+=== Tarpur | threshold 9.78 m (Naraj-equivalent warning level (derived)) | complete rows 1960 of 2283
+rows: train 769  val 365  test 826
+                MAE   RMSE    NSE  skill_vs_persistence  RMSE_top5pct  precision  recall    CSI
+model                                                                                          
+Persistence   0.171  0.280  0.947                 0.000         0.710      0.714   0.682  0.536
+Ridge         0.119  0.175  0.979                 0.608         0.341      0.818   0.818  0.692
+RandomForest  0.114  0.180  0.978                 0.587         0.369      0.944   0.773  0.739
+XGBoost       0.113  0.177  0.979                 0.598         0.365      0.895   0.773  0.708
+LSTM          0.121  0.177  0.979                 0.599         0.323      0.857   0.818  0.720
+GRU           0.116  0.174  0.980                 0.615         0.321      0.895   0.773  0.708
+  model              inputs  n_features  RMSE   NSE  skill_vs_persistence   CSI
+  Ridge                 own          21 0.282 0.946                -0.019 0.583
+XGBoost                 own          21 0.255 0.956                 0.167 0.625
+  Ridge        own+upstream          63 0.173 0.980                 0.618 0.720
+XGBoost        own+upstream          63 0.173 0.980                 0.619 0.739
+  Ridge own+upstream+season          66 0.173 0.980                 0.617 0.692
+XGBoost own+upstream+season          66 0.173 0.980                 0.615 0.739
+  Ridge    rain_only+season          35 0.261 0.954                 0.130 0.483
+XGBoost    rain_only+season          35 0.265 0.953                 0.104 0.500
+  Ridge         all (+rain)          98 0.175 0.979                 0.608 0.692
+XGBoost         all (+rain)          98 0.177 0.979                 0.598 0.708

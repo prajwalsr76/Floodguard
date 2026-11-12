@@ -1,0 +1,8 @@
+{
+  "port": 8765,
+  "fetch_every_minutes": 30,
+  "stale_hours": 6,
+  "open_browser_on_start": true,
+  "allow_phones_on_same_wifi": false,
+  "demo_seconds_per_day": 12
+}

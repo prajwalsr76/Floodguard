@@ -1,0 +1,41 @@
+{
+ "bands": [
+  "in_aoi",
+  "elev_m",
+  "slope_deg",
+  "river",
+  "dist_river_m",
+  "har_m",
+  "jrc_occurrence",
+  "lc_tree_frac",
+  "lc_shrub_frac",
+  "lc_grass_frac",
+  "lc_crop_frac",
+  "lc_built_frac",
+  "lc_bare_frac",
+  "lc_water_frac",
+  "lc_wetland_frac",
+  "lc_major",
+  "near_station",
+  "dist_station_m"
+ ],
+ "transform": [
+  100.0,
+  0.0,
+  355500.0,
+  0.0,
+  -100.0,
+  2278900.0
+ ],
+ "shape": [
+  435,
+  767
+ ],
+ "crs": "EPSG:32645",
+ "res": 100,
+ "corridor_stations": [
+  "Naraj",
+  "Kishan Nagar",
+  "Tarpur"
+ ]
+}

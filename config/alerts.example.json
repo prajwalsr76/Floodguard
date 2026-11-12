@@ -1,0 +1,30 @@
+{
+  "_read_me": "Copy this file to config/alerts.json and fill in the channels you want. Set enabled to true. Keep alerts.json private: it holds your keys. Steps: docs/ALERTS_SETUP.md",
+  "desktop": {
+    "enabled": true,
+    "send_demo_alerts": true
+  },
+  "telegram": {
+    "enabled": false,
+    "send_demo_alerts": true,
+    "bot_token": "PASTE-THE-TOKEN-FROM-BOTFATHER",
+    "chat_ids": ["PASTE-YOUR-CHAT-ID"]
+  },
+  "email": {
+    "enabled": false,
+    "send_demo_alerts": true,
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "username": "your.address@gmail.com",
+    "app_password": "PASTE-A-GMAIL-APP-PASSWORD",
+    "to": ["your.address@gmail.com"]
+  },
+  "sms": {
+    "enabled": false,
+    "send_demo_alerts": false,
+    "provider": "fast2sms",
+    "api_key": "PASTE-FAST2SMS-API-KEY",
+    "numbers": ["9XXXXXXXXX"],
+    "_twilio_instead": "set provider to twilio and add account_sid, auth_token, from_number; numbers then need +91"
+  }
+}

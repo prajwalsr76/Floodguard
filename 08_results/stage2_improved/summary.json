@@ -1,0 +1,110 @@
+{
+ "selection_note": "All rule variants have the same average accuracy (F1 within 0.007). Chosen: monotone + level-aware cut-off + river connectivity, the physically consistent variant; also best on the largest floods.",
+ "chosen": {
+  "model": "monotone XGBoost",
+  "connectivity": true,
+  "cutoff": {
+   "c0": 0.9,
+   "slope_per_m": 0.05,
+   "floor": 0.5,
+   "pivot_naraj_m": 25.41
+  }
+ },
+ "loyo": {
+  "F1_flood": 0.6433,
+  "IoU_flood": 0.5026,
+  "area_ratio_flood_median": 1.25,
+  "F1_all": 0.5423,
+  "F1_2022": 0.6809,
+  "area_ratio_2022": 0.8244
+ },
+ "original": {
+  "F1_flood": 0.6413,
+  "IoU_flood": 0.5002,
+  "area_ratio_flood_median": 1.1631,
+  "F1_all": 0.5453,
+  "F1_2022": 0.6,
+  "area_ratio_2022": 0.5743
+ },
+ "n_scenes": 48,
+ "n_flood_scenes": 16,
+ "per_year_choice": [
+  {
+   "year": 2015,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2016,
+   "c0": 0.9,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2017,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2018,
+   "c0": 0.9,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2019,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2020,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2021,
+   "c0": 0.9,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2022,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2023,
+   "c0": 0.85,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2024,
+   "c0": 0.9,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  },
+  {
+   "year": 2025,
+   "c0": 0.9,
+   "slope": 0.05,
+   "conn": true,
+   "model": "mono"
+  }
+ ]
+}
